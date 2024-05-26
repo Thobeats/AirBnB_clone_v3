@@ -81,7 +81,7 @@ class DBStorage:
         """
         result = self.__session.query(cls).get(id)
         return result
-    
+
     def count(self, cls=None):
         """
         A methos to count all the object in a class

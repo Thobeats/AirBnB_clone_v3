@@ -68,8 +68,8 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestFileStorage(unittest.TestCase):
-    """Test the FileStorage class"""
+class TestDBStorage(unittest.TestCase):
+    """Test the DBStorage class"""
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
@@ -82,7 +82,41 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_new(self):
         """test that new adds an object to the database"""
+        state = State(name="Lagos")
+        models.storage.new(state)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
-        """Test that save properly saves objects to file.json"""
+        """Test that save properly saves objects to the db"""
+        models.storage.save()
+
+    @unittest.skipIf(models.storage_t != 'db', "testing db storage")
+    def test_get(self):
+        """Test the get function gets an object by id"""
+        state = State(name="Lagos")
+        models.storage.new(state)
+        models.storage.save()
+        first_state_id = list(models.storage.all(State).values())[0].id
+        self.assertEqual("<class 'models.state.State'>",
+                         str(type(models.storage.get(State,
+                                                     first_state_id))))
+
+    @unittest.skipIf(models.storage_t != 'db', "testing db storage")
+    def test_count(self):
+        """Test the count function"""
+        state = State(name="Lagos")
+        models.storage.new(state)
+        models.storage.save()
+        count = models.storage.count(State)
+        self.assertEqual(count, 1)
+
+    @unittest.skipIf(models.storage_t != 'db', "testing db storage")
+    def test_count_all(self):
+        """Test the count function"""
+        state = State(name="Lagos")
+        models.storage.new(state)
+        amenity = Amenity(name="amenity1")
+        models.storage.new(amenity)
+        models.storage.save()
+        count = models.storage.count()
+        self.assertEqual(count, 3)
