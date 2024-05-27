@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+Create an app that returns the status of an API
+"""
 
 from flask import Flask
 from models import storage
