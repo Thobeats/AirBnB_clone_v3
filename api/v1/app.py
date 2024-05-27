@@ -13,12 +13,14 @@ app = Flask(__name__)
 
 app.register_blueprint(app_views)
 
+
 @app.teardown_appcontext
 def db_close(self):
     """
     close the storage on close down
     """
     storage.close()
+
 
 if __name__ == "__main__":
     app.run(host=HBNB_API_HOST, port=HBNB_API_PORT, threaded=True)
