@@ -32,6 +32,7 @@ def get_states(state_id):
         abort(404)
     return state.to_dict()
 
+
 @app_views.route("/states/<state_id>", methods=["DELETE"],
                  strict_slashes=False)
 def delete_state(state_id):
@@ -82,4 +83,3 @@ def update_state(state_id):
             setattr(state, key, val)
     state.save()
     return jsonify(state.to_dict()), 200
-    
