@@ -87,3 +87,9 @@ class FileStorage:
             return len(result)
         else:
             return len(self.__objects.values())
+
+    def get_classes(self):
+        """
+        return the classes
+        """
+        return classes
