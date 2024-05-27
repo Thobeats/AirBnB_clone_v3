@@ -95,3 +95,9 @@ class DBStorage:
             for table in metadata.tables.values():
                 tables_count += self.__session.query(table).count()
             return tables_count
+    
+    def get_classes(self):
+        """
+        return the classes
+        """
+        return classes
