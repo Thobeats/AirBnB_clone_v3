@@ -56,7 +56,7 @@ def add_user():
     json = request.get_json(silent=True)
 
     if json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
 
     if 'password' not in json:
         abort(400, "Missing password")
@@ -80,7 +80,7 @@ def update_user(user_id):
         abort(404)
     update_json = request.get_json(silent=True)
     if update_json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
     for key, val in update_json.items():
         if key not in ['id', 'email', 'created_at', 'updated_at']:
             setattr(user, key, val)

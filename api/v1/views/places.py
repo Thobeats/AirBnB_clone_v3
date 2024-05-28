@@ -72,10 +72,10 @@ def add_place(city_id):
     user = storage.get(User, json['user_id'])
 
     if user is None:
-        abort(404)
+        abort(400)
 
     if 'name' not in json:
-        abort(404, "Missing name")
+        abort(400, "Missing name")
 
     new_place = Place(**json)
     new_place.save()
@@ -90,10 +90,10 @@ def update_place(place_id):
     """
     place = storage.get(Place, place_id)
     if place is None:
-        abort(404)
+        abort(400)
     update_json = request.get_json(silent=True)
     if update_json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
     for key, val in update_json.items():
         if key not in ['id', 'user_id', 'city_id', 'created_at', 'updated_at']:
             setattr(place, key, val)
