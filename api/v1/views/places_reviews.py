@@ -19,6 +19,8 @@ def get_place_reviews(place_id):
     Get all the reviews of a place
     """
     place = storage.get(Place, place_id)
+    if place is None:
+        abort(404)
     reviews = list()
     for review in place.reviews:
         reviews.append(review.to_dict())

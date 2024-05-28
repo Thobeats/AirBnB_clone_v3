@@ -17,6 +17,8 @@ def get_state_cities(state_id):
     Get all the cities in state
     """
     state = storage.get(State, state_id)
+    if state is None:
+        abort(404)
     cities = list()
     if state is None:
         abort(404)

@@ -18,6 +18,8 @@ def get_city_places(city_id):
     Get all the places of a city
     """
     city = storage.get(City, city_id)
+    if city is None:
+        abort(404)
     places = list()
     for place in city.places:
         places.append(place.to_dict())
