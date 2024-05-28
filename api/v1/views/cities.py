@@ -35,13 +35,14 @@ def get_city(city_id):
         abort(404)
     return city.to_dict()
 
+
 @app_views.route("/cities/<city_id>", methods=["DELETE"],
                  strict_slashes=False)
-def delete_city(state_id):
+def delete_city(city_id):
     """
     Deletes a city record
     """
-    city = storage.get(City, state_id)
+    city = storage.get(City, city_id)
     if city is None:
         abort(404)
     storage.delete(city)
