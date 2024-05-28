@@ -15,7 +15,7 @@ def get_amenities():
     """
     Get all ammenities
     """
-    amenities = storage.all(Amenity)
+    amenities = storage.all("Amenity")
     all_amenities = list()
     for amenity in amenities:
         all_amenities.append(amenity.to_dict())
