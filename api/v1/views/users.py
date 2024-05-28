@@ -19,7 +19,7 @@ def get_users():
     all_users = list()
     for key, user in users.items():
         all_users.append(user.to_dict())
-    return all_users
+    return jsonify(all_users)
 
 
 @app_views.route("/users/<user_id>", strict_slashes=False)
@@ -30,7 +30,7 @@ def get_user(user_id):
     user = storage.get(User, user_id)
     if user is None:
         abort(404)
-    return user.to_dict()
+    return jsonify(user.to_dict())
 
 
 @app_views.route("/users/<user_id>", methods=["DELETE"],
