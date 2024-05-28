@@ -23,7 +23,7 @@ def get_city_places(city_id):
     places = list()
     for place in city.places:
         places.append(place.to_dict())
-    return places
+    return []
 
 
 @app_views.route("/places/<place_id>", strict_slashes=False)
