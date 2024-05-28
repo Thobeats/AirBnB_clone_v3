@@ -11,7 +11,7 @@ from flask.json import jsonify
 
 
 @app_views.route("/amenities", strict_slashes=False)
-def get_amenities(state_id):
+def get_amenities():
     """
     Get all ammenities
     """
@@ -47,9 +47,9 @@ def delete_amenity(amenity_id):
     return jsonify({}), 200
 
 
-@app_views.route("/amenities/<amenity_id>", methods=['POST'],
+@app_views.route("/amenities", methods=['POST'],
                  strict_slashes=False)
-def add_amenity(amenity_id):
+def add_amenity():
     """New Amenity
     Add a new amenity
     """
