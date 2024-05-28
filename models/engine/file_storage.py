@@ -81,10 +81,11 @@ class FileStorage:
         A method to count all the object in a class
         """
         if cls is not None:
-            result = [filter(lambda record:
-                             (record.split(".")[0] == cls.__name__),
-                             self.__objects.keys())]
-            return len(result)
+            count = 0
+            for obj, value in self.__objects.items():
+                if value.__class__ == cls:
+                    count += 1
+            return count
         else:
             return len(self.__objects.values())
 
