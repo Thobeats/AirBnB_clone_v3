@@ -17,7 +17,7 @@ def get_users():
     """
     users = storage.all("User")
     all_users = list()
-    for user in users:
+    for key, user in users.items():
         all_users.append(user.to_dict())
     return all_users
 
