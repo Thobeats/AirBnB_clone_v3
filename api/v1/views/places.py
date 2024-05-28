@@ -64,7 +64,7 @@ def add_place(city_id):
         abort(404)
 
     if json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
 
     if 'user_id' not in json:
         abort(404, "Missing user_id")
@@ -72,7 +72,7 @@ def add_place(city_id):
     user = storage.get(User, json['user_id'])
 
     if user is None:
-        abort(400)
+        abort(404)
 
     if 'name' not in json:
         abort(400, "Missing name")
@@ -90,7 +90,7 @@ def update_place(place_id):
     """
     place = storage.get(Place, place_id)
     if place is None:
-        abort(400)
+        abort(404)
     update_json = request.get_json(silent=True)
     if update_json is None:
         abort(400, "Not a JSON")
