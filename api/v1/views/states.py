@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-creates route /status for blueprint object app_views
+creates state blueprint object app_views
 """
 
 from api.v1.views import app_views
