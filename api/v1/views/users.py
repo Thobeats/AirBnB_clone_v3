@@ -59,10 +59,10 @@ def add_user():
         abort(404, "Not a JSON")
 
     if 'password' not in json:
-        abort(404, "Missing password")
+        abort(400, "Missing password")
 
     if 'email' not in json:
-        abort(404, "Missing email")
+        abort(400, "Missing email")
 
     new_user = User(**json)
     new_user.save()
