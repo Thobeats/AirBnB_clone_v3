@@ -77,7 +77,7 @@ def add_state_city(state_id):
                  strict_slashes=False)
 def update_city(city_id):
     """
-    Updates the value of a date object
+    Updates the value of the object
     """
     city = storage.get(City, city_id)
     if city is None:

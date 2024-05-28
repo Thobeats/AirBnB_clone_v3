@@ -70,7 +70,7 @@ def add_state():
                  strict_slashes=False)
 def update_state(state_id):
     """
-    Updates the value of a date object
+    Updates the value of the object
     """
     state = storage.get(State, state_id)
     if state is None:
