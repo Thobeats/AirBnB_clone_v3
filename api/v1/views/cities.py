@@ -71,7 +71,7 @@ def add_state_city(state_id):
         abort(404, "Missing name")
 
     new_city = City(**json)
-    new_city.state_id = state_id
+    new_city.state_id = state
     new_city.save()
     return jsonify(new_city.to_dict()), 201
 
