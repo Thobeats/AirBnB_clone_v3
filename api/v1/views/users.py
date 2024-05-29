@@ -8,6 +8,7 @@ from models import storage
 from models.user import User
 from flask import abort, request
 from flask.json import jsonify
+import hashlib
 
 
 @app_views.route("/users", strict_slashes=False)
@@ -64,7 +65,12 @@ def add_user():
     if 'email' not in json:
         abort(400, "Missing email")
 
+    hasher = hashlib.md5()
+    hasher.update(json['password'])
+    hashed_password = hasher.digest()
+
     new_user = User(**json)
+    new_user.password = hashed_password
     new_user.save()
     return jsonify(new_user.to_dict()), 201
 
