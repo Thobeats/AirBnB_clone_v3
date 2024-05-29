@@ -70,7 +70,7 @@ def add_place(city_id):
         abort(404)
 
     if json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
 
     if 'user_id' not in json:
         abort(400, "Missing user_id")
