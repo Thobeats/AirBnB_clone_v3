@@ -66,32 +66,30 @@ def add_place(city_id):
     """New Place
     Add a new place
     """
-    try:
-        json = request.get_json(silent=True)
-        city = storage.get(City, city_id)
+    json = request.get_json(silent=True)
+    city = storage.get(City, city_id)
 
-        if city is None:
-            abort(404)
-
-        if json is None:
-            abort(400, "Not a JSON")
-
-        if 'user_id' not in json:
-            abort(404, "Missing user_id")
-
-        user = storage.get(User, json['user_id'])
-
-        if user is None:
-            abort(404)
-
-        if 'name' not in json:
-            abort(400, "Missing name")
-
-        new_place = Place(**json)
-        new_place.save()
-        return jsonify(new_place.to_dict()), 201
-    except Exception:
+    if city is None:
         abort(404)
+
+    if json is None:
+        abort(400, "Not a JSON")
+
+    if 'user_id' not in json:
+        abort(400, "Missing user_id")
+
+    user = storage.get(User, json['user_id'])
+
+    if user is None:
+        abort(404)
+
+    if 'name' not in json:
+        abort(400, "Missing name")
+
+    new_place = Place(**json)
+    new_place.city_id = city_id
+    new_place.save()
+    return jsonify(new_place.to_dict()), 201
 
 
 @app_views.route("/places/<place_id>", methods=['PUT'],
