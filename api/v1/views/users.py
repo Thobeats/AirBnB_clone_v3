@@ -65,12 +65,7 @@ def add_user():
     if 'email' not in json:
         abort(400, "Missing email")
 
-    hasher = hashlib.md5()
-    hasher.update(json['password'].encode('utf-8'))
-    hashed_password = hasher.hexdigest()
-
     new_user = User(**json)
-    new_user.password = hashed_password
     new_user.save()
     return jsonify(new_user.to_dict()), 201
 

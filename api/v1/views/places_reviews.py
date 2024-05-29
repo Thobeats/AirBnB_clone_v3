@@ -38,7 +38,8 @@ def get_review(review_id):
     return jsonify(review.to_dict())
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["DELETE"],
+@app_views.route("/places/<place_id>/amenities/<amenity_id>",
+                 methods=["DELETE"],
                  strict_slashes=False)
 def delete_review(place_id, amenity_id):
     """
