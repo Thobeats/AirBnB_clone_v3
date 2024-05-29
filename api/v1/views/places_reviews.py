@@ -65,10 +65,10 @@ def add_review(place_id):
         abort(404)
 
     if json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
 
     if 'user_id' not in json:
-        abort(404, "Missing user_id")
+        abort(400, "Missing user_id")
 
     user = storage.get(User, json['user_id'])
 
@@ -76,7 +76,7 @@ def add_review(place_id):
         abort(404)
 
     if 'text' not in json:
-        abort(404, "Missing text")
+        abort(400, "Missing text")
 
     new_review = Review(**json)
     new_review.save()
