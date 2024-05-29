@@ -21,7 +21,7 @@ def get_all_states():
         states = list()
         for key, obj in all_states.items():
             states.append(obj.to_dict())
-        return states
+        return jsonify(states)
     except Exception:
         return jsonify([])
 
