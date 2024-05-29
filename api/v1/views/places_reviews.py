@@ -95,7 +95,7 @@ def update_review(review_id):
         abort(404)
     update_json = request.get_json(silent=True)
     if update_json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
     for key, val in update_json.items():
         if key not in ['id', 'user_id', 'place_id',
                        'created_at', 'updated_at']:
