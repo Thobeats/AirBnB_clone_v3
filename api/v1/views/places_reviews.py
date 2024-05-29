@@ -59,7 +59,7 @@ def add_review(place_id):
     Add a new review
     """
     json = request.get_json(silent=True)
-    place = storage.get(City, place_id)
+    place = storage.get(Place, place_id)
 
     if place is None:
         abort(404)
@@ -79,6 +79,7 @@ def add_review(place_id):
         abort(400, "Missing text")
 
     new_review = Review(**json)
+    new_review.place_id = place_id
     new_review.save()
     return jsonify(new_review.to_dict()), 201
 
