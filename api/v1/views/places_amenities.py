@@ -22,32 +22,32 @@ def get_place_amenities(place_id):
     if place is None:
         abort(404)
     amenities = list()
-    for amenities in place.amenities:
-        amenities.append(amenities.to_dict())
+    for amenity in place.amenities:
+        amenities.append(amenity.to_dict())
     return jsonify(amenities)
 
 
-@app_views.route("/amenities/<amenities_id>", strict_slashes=False)
-def get_new_amenity(amenities_id):
+@app_views.route("/amenities/<amenity_id>", strict_slashes=False)
+def get_new_amenity(amenity_id):
     """
     Get a amenities
     """
-    amenities = storage.get(amenities, amenities_id)
-    if amenities is None:
+    amenity = storage.get(Amenity, amenity_id)
+    if amenity is None:
         abort(404)
-    return jsonify(amenities.to_dict())
+    return jsonify(amenity.to_dict())
 
 
-@app_views.route("/amenities/<amenities_id>", methods=["DELETE"],
+@app_views.route("/amenities/<amenity_id>", methods=["DELETE"],
                  strict_slashes=False)
-def delete_amenities(amenities_id):
+def delete_amenities(amenity_id):
     """
     Deletes a amenities
     """
-    amenities = storage.get(amenities, amenities_id)
-    if amenities is None:
+    amenity = storage.get(Amenity, amenity_id)
+    if amenity is None:
         abort(404)
-    storage.delete(amenities)
+    storage.delete(amenity)
     storage.save()
     return jsonify({}), 200
 
@@ -59,16 +59,16 @@ def add_amenities(place_id):
     Add a new amenities
     """
     json = request.get_json(silent=True)
-    place = storage.get(City, place_id)
+    place = storage.get(Place, place_id)
 
     if place is None:
         abort(404)
 
     if json is None:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
 
     if 'user_id' not in json:
-        abort(404, "Missing user_id")
+        abort(400, "Missing user_id")
 
     user = storage.get(User, json['user_id'])
 
@@ -76,14 +76,14 @@ def add_amenities(place_id):
         abort(404)
 
     if 'text' not in json:
-        abort(404, "Missing text")
+        abort(400, "Missing text")
 
     new_amenities = Amenity(**json)
     new_amenities.save()
     return jsonify(new_amenities.to_dict()), 201
 
 
-@app_views.route("/amenities/<amenities_id>", methods=['PUT'],
+@app_views.route("/amenities/<amenity_id>", methods=['PUT'],
                  strict_slashes=False)
 def update_amenities(amenities_id):
     """
