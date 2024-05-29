@@ -8,55 +8,55 @@ from models import storage
 from models.place import Place
 from models.city import City
 from models.user import User
-from models.review import Review
+from models.amenity import Amenity
 from flask import abort, request
 from flask.json import jsonify
 
 
-@app_views.route("/places/<place_id>/reviews", strict_slashes=False)
-def get_place_reviews(place_id):
+@app_views.route("/places/<place_id>/amenities", strict_slashes=False)
+def get_place_amenities(place_id):
     """
-    Get all the reviews of a place
+    Get all the amenities of a place
     """
     place = storage.get(Place, place_id)
     if place is None:
         abort(404)
-    reviews = list()
-    for review in place.reviews:
-        reviews.append(review.to_dict())
-    return jsonify(reviews)
+    amenities = list()
+    for amenities in place.amenities:
+        amenities.append(amenities.to_dict())
+    return jsonify(amenities)
 
 
-@app_views.route("/reviews/<review_id>", strict_slashes=False)
-def get_review(review_id):
+@app_views.route("/amenities/<amenities_id>", strict_slashes=False)
+def get_new_amenity(amenities_id):
     """
-    Get a review
+    Get a amenities
     """
-    review = storage.get(Review, review_id)
-    if review is None:
+    amenities = storage.get(amenities, amenities_id)
+    if amenities is None:
         abort(404)
-    return jsonify(review.to_dict())
+    return jsonify(amenities.to_dict())
 
 
-@app_views.route("/reviews/<review_id>", methods=["DELETE"],
+@app_views.route("/amenities/<amenities_id>", methods=["DELETE"],
                  strict_slashes=False)
-def delete_review(review_id):
+def delete_amenities(amenities_id):
     """
-    Deletes a review
+    Deletes a amenities
     """
-    review = storage.get(Review, review_id)
-    if review is None:
+    amenities = storage.get(amenities, amenities_id)
+    if amenities is None:
         abort(404)
-    storage.delete(review)
+    storage.delete(amenities)
     storage.save()
     return jsonify({}), 200
 
 
-@app_views.route("/places/<place_id>/reviews", methods=['POST'],
+@app_views.route("/places/<place_id>/amenities", methods=['POST'],
                  strict_slashes=False)
-def add_review(place_id):
-    """New Review
-    Add a new review
+def add_amenities(place_id):
+    """New amenities
+    Add a new amenities
     """
     json = request.get_json(silent=True)
     place = storage.get(City, place_id)
@@ -78,19 +78,19 @@ def add_review(place_id):
     if 'text' not in json:
         abort(404, "Missing text")
 
-    new_review = Review(**json)
-    new_review.save()
-    return jsonify(new_review.to_dict()), 201
+    new_amenities = Amenity(**json)
+    new_amenities.save()
+    return jsonify(new_amenities.to_dict()), 201
 
 
-@app_views.route("/reviews/<review_id>", methods=['PUT'],
+@app_views.route("/amenities/<amenities_id>", methods=['PUT'],
                  strict_slashes=False)
-def update_review(review_id):
+def update_amenities(amenities_id):
     """
     Updates the value of the place object
     """
-    review = storage.get(Review, review_id)
-    if review is None:
+    amenities = storage.get(amenities, amenities_id)
+    if amenities is None:
         abort(404)
     update_json = request.get_json(silent=True)
     if update_json is None:
@@ -98,6 +98,6 @@ def update_review(review_id):
     for key, val in update_json.items():
         if key not in ['id', 'user_id', 'place_id',
                        'created_at', 'updated_at']:
-            setattr(review, key, val)
-    review.save()
-    return jsonify(review.to_dict()), 200
+            setattr(amenities, key, val)
+    amenities.save()
+    return jsonify(amenities.to_dict()), 200
