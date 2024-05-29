@@ -49,15 +49,12 @@ def delete_place(place_id):
     """
     Deletes a place
     """
-    try:
-        place = storage.get(Place, place_id)
-        if place is None:
-            abort(404)
-        storage.delete(place)
-        storage.save()
-        return jsonify({}), 200
-    except Exception:
+    place = storage.get(Place, place_id)
+    if place is None:
         abort(404)
+    storage.delete(place)
+    storage.save()
+    return jsonify({}), 200
 
 
 @app_views.route("/cities/<city_id>/places", methods=['POST'],
@@ -73,7 +70,7 @@ def add_place(city_id):
         abort(404)
 
     if json is None:
-        abort(400, "Not a JSON")
+        abort(404, "Not a JSON")
 
     if 'user_id' not in json:
         abort(400, "Missing user_id")
@@ -98,17 +95,14 @@ def update_place(place_id):
     """
     Updates the value of the place object
     """
-    try:
-        place = storage.get(Place, place_id)
-        if place is None:
-            abort(404)
-        update_json = request.get_json(silent=True)
-        if update_json is None:
-            abort(400, "Not a JSON")
-        for key, val in update_json.items():
-            if key not in ['id', 'user_id', 'city_id', 'created_at', 'updated_at']:
-                setattr(place, key, val)
-        place.save()
-        return jsonify(place.to_dict()), 200
-    except Exception:
+    place = storage.get(Place, place_id)
+    if place is None:
         abort(404)
+    update_json = request.get_json(silent=True)
+    if update_json is None:
+        abort(400, "Not a JSON")
+    for key, val in update_json.items():
+        if key not in ['id', 'user_id', 'city_id', 'created_at', 'updated_at']:
+            setattr(place, key, val)
+    place.save()
+    return jsonify(place.to_dict()), 200
