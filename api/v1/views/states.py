@@ -15,11 +15,15 @@ def get_all_states():
     """
     Gets all the state objects
     """
-    all_states = storage.all("State")
-    states = list()
-    for key, obj in all_states.items():
-        states.append(obj.to_dict())
-    return states
+    try:
+
+        all_states = storage.all("State")
+        states = list()
+        for key, obj in all_states.items():
+            states.append(obj.to_dict())
+        return states
+    except Exception:
+        return jsonify([])
 
 
 @app_views.route("/states/<state_id>", strict_slashes=False)
@@ -27,10 +31,13 @@ def get_states(state_id):
     """
     Get a states by its Id
     """
-    state = storage.get(State, state_id)
-    if state is None:
-        abort(404)
-    return state.to_dict()
+    try:
+        state = storage.get(State, state_id)
+        if state is None:
+            abort(404)
+        return state.to_dict()
+    except Exception:
+        return jsonify([])
 
 
 @app_views.route("/states/<state_id>", methods=["DELETE"],
