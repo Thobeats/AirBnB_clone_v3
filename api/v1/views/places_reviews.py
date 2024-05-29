@@ -6,9 +6,9 @@ creates route /status for blueprint object app_views
 from api.v1.views import app_views
 from models import storage
 from models.place import Place
-from models.city import City
 from models.user import User
 from models.review import Review
+from models.amenity import Amenity
 from flask import abort, request
 from flask.json import jsonify
 
@@ -38,50 +38,44 @@ def get_review(review_id):
     return jsonify(review.to_dict())
 
 
-@app_views.route("/reviews/<review_id>", methods=["DELETE"],
+@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["DELETE"],
                  strict_slashes=False)
-def delete_review(review_id):
+def delete_review(place_id, amenity_id):
     """
-    Deletes a review
+    Deletes an amenity
     """
-    review = storage.get(Review, review_id)
-    if review is None:
+    place = storage.get(Place, place_id)
+    amenity = storage.get(Amenity, amenity_id)
+    if place is None or amenity is None:
         abort(404)
-    storage.delete(review)
-    storage.save()
-    return jsonify({}), 200
+    for amenity in place.amenities:
+        if amenity.id == amenity_id:
+            storage.delete(amenity)
+            storage.save()
+            return jsonify({}), 200
+    abort(404)
 
 
-@app_views.route("/places/<place_id>/reviews", methods=['POST'],
+@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=['POST'],
                  strict_slashes=False)
-def add_review(place_id):
-    """New Review
-    Add a new review
+def add_review(place_id, amenity_id):
+    """
+    Add a new amenity
     """
     json = request.get_json(silent=True)
     place = storage.get(Place, place_id)
+    amenity = storage.get(Amenity, amenity_id)
 
-    if place is None:
+    if place is None or amenity is None:
         abort(404)
+    for amenity in place.amenities:
+        if amenity.id == amenity_id:
+            return jsonify(amenity.to_dict()), 200
 
-    if json is None:
-        abort(400, "Not a JSON")
-
-    if 'user_id' not in json:
-        abort(400, "Missing user_id")
-
-    user = storage.get(User, json['user_id'])
-
-    if user is None:
-        abort(404)
-
-    if 'text' not in json:
-        abort(400, "Missing text")
-
-    new_review = Review(**json)
-    new_review.place_id = place_id
-    new_review.save()
-    return jsonify(new_review.to_dict()), 201
+    new_amenity = Amenity(**json)
+    new_amenity.place_id = place_id
+    new_amenity.save()
+    return jsonify(new_amenity.to_dict()), 201
 
 
 @app_views.route("/reviews/<review_id>", methods=['PUT'],
