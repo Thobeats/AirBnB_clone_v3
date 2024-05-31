@@ -154,26 +154,28 @@ def search_places():
                 if state.id in json['states']:
                     for state_city in state.cities:
                         cities.append(state_city.id)
-            print(cities)
             cityQuery = storage.all(City)
             for city in cityQuery.values():
                 if city.id in json['cities']:
                     cities.append(city.id)
 
             citiesStr = "', '".join(cities)
+            print(citiesStr)
             placeQuery = storage.queryfilter(Place, "city_id in ('{}')"
                                              .format(citiesStr))
 
         if 'amenities' in json and len(json['amenities']) > 0:
             places = []
-            for place in placeQuery:
-                if len(set(json['amenities'])
-                       .intersection(set(place.amenities))) > 0:
-                    places.append(place.to_dict())
+            for place in placeQuery.values():
+                plc  = storage.get(Place, place.id)
+                for amenity_id in plc.amenities:
+                    if amenity_id in json['amenities']:
+                        places.append(place.to_dict())
             return jsonify(places)
         else:
             places = []
             for place in placeQuery:
+                print(place)
                 places.append(place.to_dict())
             return jsonify(places)
     else:
