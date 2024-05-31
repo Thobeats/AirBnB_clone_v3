@@ -160,17 +160,18 @@ def search_places():
                     cities.append(city.id)
 
             citiesStr = "', '".join(cities)
-            print(citiesStr)
             placeQuery = storage.queryfilter(Place, "city_id in ('{}')"
                                              .format(citiesStr))
 
         if 'amenities' in json and len(json['amenities']) > 0:
             places = []
             for place in placeQuery.values():
-                plc  = storage.get(Place, place.id)
-                for amenity_id in plc.amenities:
-                    if amenity_id in json['amenities']:
-                        places.append(place.to_dict())
+                plc = storage.get(Place, place.id)
+                for amenity in plc.amenities:
+                    if (amenity.id in json['amenities'] and
+                            amenity.id not in places):
+                        del plc.__dict__['amenities']
+                        places.append(plc.to_dict())
             return jsonify(places)
         else:
             places = []
