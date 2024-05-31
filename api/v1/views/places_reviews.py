@@ -40,7 +40,7 @@ def get_review(review_id):
 
 @app_views.route("/reviews/<review_id>", methods=['DELETE'],
                  strict_slashes=False)
-def delete_review(review_id):
+def delete_a_review(review_id):
     """
     Delete a review
     """
@@ -74,7 +74,7 @@ def add_place_review(place_id):
     review = Review(**json)
     review.place_id = place_id
     review.save()
-    return jsonify(review), 201
+    return jsonify(review.to_dict()), 201
 
 
 @app_views.route("/reviews/<review_id>", methods=['PUT'],
