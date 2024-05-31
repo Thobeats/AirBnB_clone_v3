@@ -13,7 +13,7 @@ from models.state import State
 from models.user import User
 from os import getenv
 import sqlalchemy
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, text
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 classes = {"Amenity": Amenity, "City": City,
@@ -101,3 +101,10 @@ class DBStorage:
         return the classes
         """
         return classes
+    
+    def queryfilter(self, cls, txt):
+        """
+        Query a Class with filters
+        """
+        if cls is not None:
+            return self.__session.query(cls).filter(text(txt)).all()
