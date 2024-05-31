@@ -10,6 +10,7 @@ from models.city import City
 from models.user import User
 from flask import abort, request
 from flask.json import jsonify
+from models.state import State
 
 
 @app_views.route("/cities/<city_id>/places", strict_slashes=False)
@@ -106,3 +107,78 @@ def update_place(place_id):
             setattr(place, key, val)
     place.save()
     return jsonify(place.to_dict()), 200
+
+
+@app_views.route("/places_search", methods=['POST'],
+                 strict_slashes=False)
+def search_places():
+    """Search Places
+    Keyword arguments:
+    states: list of State ids
+    cities: list of City ids
+    amenities: list of Amenity ids
+    Return: valid JSON
+    """
+    all_places = []
+    json = request.get_json(silent=True)
+    if json is None:
+        abort(400, "Not a JSON")
+    if len(json) > 0:
+        placeQuery = storage.all(Place)
+        if 'states' in json and len(json['states']) > 0:
+            stateQuery = storage.all(State)
+            cities = []
+            for state in stateQuery.values():
+                if state.id in json['states']:
+                    for state_city in state.cities:
+                        cities.append(state_city.id)
+            citiesStr = "', '".join(cities)
+            placeQuery = storage.queryfilter(Place, "city_id in ('{}')"
+                                             .format(citiesStr))
+
+        if 'cities' in json and len(json['cities']) > 0:
+            cityQuery = storage.all(City)
+            cities = []
+            for city in cityQuery.values():
+                if city.id in json['cities']:
+                    cities.append(city.id)
+            citiesStr = "', '".join(cities)
+            placeQuery = storage.queryfilter(Place, "city_id in ('{}')"
+                                             .format(citiesStr))
+
+        if (('states' in json and len(json['states']) > 0) and
+                ('cities' in json and len(json['cities']) > 0)):
+            stateQuery = storage.all(State)
+            cities = []
+            for state in stateQuery.values():
+                if state.id in json['states']:
+                    for state_city in state.cities:
+                        cities.append(state_city.id)
+            print(cities)
+            cityQuery = storage.all(City)
+            for city in cityQuery.values():
+                if city.id in json['cities']:
+                    cities.append(city.id)
+
+            citiesStr = "', '".join(cities)
+            placeQuery = storage.queryfilter(Place, "city_id in ('{}')"
+                                             .format(citiesStr))
+
+        if 'amenities' in json and len(json['amenities']) > 0:
+            places = []
+            for place in placeQuery.values():
+                if len(set(json['amenities'])
+                       .intersection(set(place.amenities))) > 0:
+                    places.append(place.to_dict())
+            return jsonify(places)
+        else:
+            places = []
+            for place in placeQuery:
+                places.append(place.to_dict())
+            return jsonify(places)
+    else:
+        placeQuery = storage.all(Place)
+        places = []
+        for place in placeQuery.values():
+            places.append(place.to_dict())
+        return jsonify(places)
