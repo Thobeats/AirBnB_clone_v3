@@ -166,12 +166,11 @@ def search_places():
         if 'amenities' in json and len(json['amenities']) > 0:
             places = []
             for place in placeQuery.values():
-                plc = storage.get(Place, place.id)
-                for amenity in plc.amenities:
+                for amenity in place.amenities:
                     if (amenity.id in json['amenities'] and
                             amenity.id not in places):
-                        del plc.__dict__['amenities']
-                        places.append(plc.to_dict())
+                        del place.__dict__['amenities']
+                        places.append(place.to_dict())
             return jsonify(places)
         else:
             places = []

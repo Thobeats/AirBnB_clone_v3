@@ -19,7 +19,7 @@ def get_amenities():
     all_amenities = list()
     for key, amenity in amenities.items():
         all_amenities.append(amenity.to_dict())
-    return all_amenities
+    return jsonify(all_amenities)
 
 
 @app_views.route("/amenities/<amenity_id>", strict_slashes=False)
@@ -30,7 +30,7 @@ def get_amenity(amenity_id):
     amenity = storage.get(Amenity, amenity_id)
     if amenity is None:
         abort(404)
-    return amenity.to_dict()
+    return jsonify(amenity.to_dict())
 
 
 @app_views.route("/amenities/<amenity_id>", methods=["DELETE"],
