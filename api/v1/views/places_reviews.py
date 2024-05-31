@@ -38,52 +38,50 @@ def get_review(review_id):
     return jsonify(review.to_dict())
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>",
-                 methods=["DELETE"],
+@app_views.route("/reviews/<review_id>", methods=['POST'],
                  strict_slashes=False)
-def delete_review(place_id, amenity_id):
+def delete_review(review_id):
     """
-    Deletes an amenity
+    Delete a review
     """
-    place = storage.get(Place, place_id)
-    amenity = storage.get(Amenity, amenity_id)
-    if place is None or amenity is None:
+    review = storage.get(Review, review_id)
+    if review is None:
         abort(404)
-    for amenity in place.amenities:
-        if amenity.id == amenity_id:
-            storage.delete(amenity)
-            storage.save()
-            return jsonify({}), 200
-    abort(404)
+    storage.delete(review)
+    storage.save()
+    return jsonify({}), 200
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=['POST'],
+@app_views.route("/places/<place_id>/reviews", methods=['POST'],
                  strict_slashes=False)
-def add_review(place_id, amenity_id):
+def add_place_review(place_id):
     """
-    Add a new amenity
+    Add a new reviews of a place
     """
     json = request.get_json(silent=True)
     place = storage.get(Place, place_id)
-    amenity = storage.get(Amenity, amenity_id)
-
-    if place is None or amenity is None:
+    if place is None:
         abort(404)
-    for amenity in place.amenities:
-        if amenity.id == amenity_id:
-            return jsonify(amenity.to_dict()), 200
-
-    new_amenity = Amenity(**json)
-    new_amenity.place_id = place_id
-    new_amenity.save()
-    return jsonify(new_amenity.to_dict()), 201
+    if json is None:
+        abort(400, "Not a JSON")
+    if 'user_id' not in json:
+        abort(400, 'Missing user_id')
+    user = storage.get(User, json['user_id'])
+    if user is None:
+        abort(404)
+    if 'text' not in json:
+        abort(400, 'Missing text')
+    review = Review(**json)
+    review.place_id = place_id
+    review.save()
+    return jsonify(review), 201
 
 
 @app_views.route("/reviews/<review_id>", methods=['PUT'],
                  strict_slashes=False)
 def update_review(review_id):
     """
-    Updates the value of the place object
+    Updates the value of the review object
     """
     review = storage.get(Review, review_id)
     if review is None:
