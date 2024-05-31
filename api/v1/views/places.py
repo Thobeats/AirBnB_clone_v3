@@ -169,7 +169,8 @@ def search_places():
                 for amenity in place.amenities:
                     if (amenity.id in json['amenities'] and
                             amenity.id not in places):
-                        del place.__dict__['amenities']
+                        if 'amenities' in place.__dict__:
+                            del place.__dict__['amenities']
                         places.append(place.to_dict())
             return jsonify(places)
         else:
