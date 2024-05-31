@@ -166,7 +166,7 @@ def search_places():
 
         if 'amenities' in json and len(json['amenities']) > 0:
             places = []
-            for place in placeQuery.values():
+            for place in placeQuery:
                 if len(set(json['amenities'])
                        .intersection(set(place.amenities))) > 0:
                     places.append(place.to_dict())
