@@ -173,7 +173,7 @@ def search_places():
             return jsonify(places)
         else:
             places = []
-            for place in placeQuery.values():
+            for place in placeQuery:
                 places.append(place.to_dict())
             return jsonify(places)
     else:
